@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>This does the job</title>
+</head>
+<body>
+    <h1>Speech-to-Text Converter & Sound Recorder</h1>
+    <p>Click the link below to go to the speech-to-text processing page:</p>
+    <a href="/speech-to-text.html">Go to Speech-to-Text</a>
+
+    <p>Click below to record audio:</p>
+    <a href="/recorder.html">Record Audio</a>
+
+
+    <h1>Text-to-Speech Converter</h1>
+    <ul>
+        <li><a href="{{ url_for('text_input') }}">Enter Text</a></li>
+        <li><a href="{{ url_for('convert') }}">Convert to Speech</a></li>
+    </ul>
+</body>
+</html>

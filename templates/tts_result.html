@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Text-to-Speech Result</title>
+</head>
+<body>
+    <h1>Text-to-Speech Result</h1>
+    <audio controls>
+        <source src="{{ audio_file }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio><br><br>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+    <a href="{{ url_for('text_input') }}" target="_blank">Text Input</a>
+</body>
+</html>

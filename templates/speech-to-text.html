@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Speech-to-Text Processing</title>
+    <script>
+        function convertSpeechToText() {
+            fetch('/speech-to-text', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('transcriptionResult').textContent = data.transcription || data.error || "Error occurred.";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('transcriptionResult').textContent = "Error occurred.";
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Speech-to-Text Processing</h1>
+    <button onclick="convertSpeechToText()">Convert Speech to Text</button>
+    <div id="transcriptionResult"></div>
+</body>
+</html>

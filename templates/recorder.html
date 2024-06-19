@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recorder Page</title>
+    <script>
+        function startRecording() {
+            fetch('/recorder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=start'
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Recording started');
+                } else {
+                    console.error('Failed to start recording');
+                }
+            }).catch(error => {
+                console.error('Error starting recording:', error);
+            });
+        }
+
+        function stopRecording() {
+            fetch('/recorder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=stop'
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Recording stopped');
+                } else {
+                    console.error('Failed to stop recording');
+                }
+            }).catch(error => {
+                console.error('Error stopping recording:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Recorder Page</h1>
+    <button onclick="startRecording()">Start Recording</button>
+    <button onclick="stopRecording()">Stop Recording</button>
+</body>
+</html>
