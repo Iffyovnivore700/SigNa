@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech and Text Processing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .menu {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .menu-item {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .menu-item:hover {
+            background-color: #0056b3;
+        }
+        .submenu {
+            display: none;
+            margin-top: 10px;
+        }
+        .submenu.active {
+            display: block;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            background-color: #f9f9f9;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-content p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Speech and Text Processing</h1>
+        
+        <div class="menu">
+            <a href="#" class="menu-item" onclick="toggleSubMenu('alumno')">Alumno</a>
+            <a href="#" class="menu-item" onclick="toggleSubMenu('profesor')">Profesor</a>
+        </div>
+
+        <div class="submenu" id="alumno">
+            <a href="#" onclick="openTab(event, 'text_input_tab')">Texto</a>
+            <a href="#" onclick="openTab(event, 'tts_result_tab')">Resultado TTS</a>
+        </div>
+
+        <div class="submenu" id="profesor">
+            <a href="#" onclick="openTab(event, 'recorder_tab')">Audio</a>
+            <a href="#" onclick="openTab(event, 'speech_to_text_tab')">Speech to Text</a>
+        </div>
+
+        <div class="tab-content" id="text_input_tab">
+            <h2>Texto</h2>
+            <p>Este es el formulario para ingresar texto:</p>
+            <form action="/convert" method="post">
+                <textarea name="text" rows="4" cols="50" placeholder="Ingrese el texto a convertir..."></textarea><br><br>
+                <input type="submit" value="Convertir a Audio">
+            </form>
+        </div>
+
+        <div class="tab-content" id="tts_result_tab">
+            <h2>Resultado TTS</h2>
+            <p>Aquí se reproducirá el resultado del Texto a Voz (TTS):</p>
+            <audio controls id="audio_player">
+                <source src="" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio><br><br>
+            <a href="/">Volver al Inicio</a>
+        </div>
+
+        <div class="tab-content" id="recorder_tab">
+            <h2>Grabador de Audio</h2>
+            <p>Haga clic en los botones para comenzar o detener la grabación:</p>
+            <button onclick="startRecording()">Comenzar Grabación</button>
+            <button onclick="stopRecording()">Detener Grabación</button>
+        </div>
+
+        <div class="tab-content" id="speech_to_text_tab">
+            <h2>Reconocimiento de Voz a Texto</h2>
+            <button onclick="convertSpeechToText()">Convertir Voz a Texto</button>
+            <div id="transcriptionResult"></div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleSubMenu(submenuId) {
+            var submenus = document.getElementsByClassName("submenu");
+            for (var i = 0; i < submenus.length; i++) {
+                submenus[i].classList.remove("active");
+            }
+            document.getElementById(submenuId).classList.add("active");
+        }
+
+        function openTab(evt, tabId) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByTagName("a");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabId).style.display = "block";
+            evt.currentTarget.classList.add("active");
+        }
+
+        function startRecording() {
+            fetch('/recorder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=start'
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Recording started');
+                } else {
+                    console.error('Failed to start recording');
+                }
+            }).catch(error => {
+                console.error('Error starting recording:', error);
+            });
+        }
+
+        function stopRecording() {
+            fetch('/recorder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=stop'
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Recording stopped');
+                } else {
+                    console.error('Failed to stop recording');
+                }
+            }).catch(error => {
+                console.error('Error stopping recording:', error);
+            });
+        }
+
+        function convertSpeechToText() {
+            fetch('/speech-to-text', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('transcriptionResult').textContent = data.transcription || data.error || "Error occurred.";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('transcriptionResult').textContent = "Error occurred.";
+            });
+        }
+    </script>
+</body>
+</html>
